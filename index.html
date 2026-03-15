@@ -792,32 +792,31 @@
 
                     <!-- Form side -->
                     <div class="reveal bg-white rounded-3xl border border-slate-100 shadow-sm p-8 lg:p-10">
-                        <form action="https://formsubmit.co/kamiyabali.emedstore@gmail.com" method="POST"
-                            class="space-y-5">
+                        <form onsubmit="sendDirectMail(event)" class="space-y-5">
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-1.5">
                                     <label
                                         class="text-xs font-bold text-slate-500 uppercase tracking-widest">Name</label>
-                                    <input type="text" required placeholder="John Doe"
+                                    <input type="text" id="senderName" required placeholder="John Doe"
                                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
                                 </div>
                                 <div class="space-y-1.5">
                                     <label
                                         class="text-xs font-bold text-slate-500 uppercase tracking-widest">Email</label>
-                                    <input type="email" required placeholder="john@example.com"
+                                    <input type="email" id="senderEmail" required placeholder="john@example.com"
                                         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
                                 </div>
                             </div>
                             <div class="space-y-1.5">
                                 <label
                                     class="text-xs font-bold text-slate-500 uppercase tracking-widest">Subject</label>
-                                <input type="text" required placeholder="Project Inquiry"
+                                <input type="text" id="senderSubject" required placeholder="Project Inquiry"
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
                             </div>
                             <div class="space-y-1.5">
                                 <label
                                     class="text-xs font-bold text-slate-500 uppercase tracking-widest">Message</label>
-                                <textarea required placeholder="Tell me about your project..." rows="4"
+                                <textarea id="senderMessage" required placeholder="Tell me about your project..." rows="4"
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400 resize-none"></textarea>
                             </div>
                             <button type="submit"
@@ -858,6 +857,18 @@
        JAVASCRIPT
   ════════════════════════════════════════ -->
     <script>
+        // ── Direct Mail ─────────────────────────────
+        function sendDirectMail(event) {
+            event.preventDefault();
+            const name = document.getElementById("senderName").value;
+            const email = document.getElementById("senderEmail").value;
+            const subject = document.getElementById("senderSubject").value;
+            const message = document.getElementById("senderMessage").value;
+            
+            const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0A${message}`;
+            window.location.href = `mailto:kamiyabalir@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+        }
+
         // ── Loader ─────────────────────────────
         // Show loader for at least 3s; hide after page is ready
         const loaderEl = document.getElementById("loader");
