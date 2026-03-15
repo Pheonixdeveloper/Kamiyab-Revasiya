@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KamiyabAli Revasiya | iOS Developer</title>
+    <link rel="stylesheet" href="loader.css" />
+    <meta name="description"
+        content="KamiyabAli Revasiya — iOS & Flutter Developer crafting premium mobile experiences with Swift, SwiftUI, and Flutter." />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b2bee",
+                        "bg-light": "#f6f6f8",
+                        "bg-dark": "#121022",
+                    },
+                    fontFamily: { sans: ["Inter", "sans-serif"] },
+                    animation: {
+                        "float": "float 6s ease-in-out infinite",
+                        "float-slow": "float 9s ease-in-out infinite",
+                        "pulse-glow": "pulseGlow 2s ease-in-out infinite",
+                        "fade-up": "fadeUp 0.7s ease forwards",
+                        "spin-slow": "spin 8s linear infinite",
+                        "loader-bar": "loaderBar 2s ease-in-out forwards",
+                    },
+                    keyframes: {
+                        float: {
+                            "0%,100%": { transform: "translateY(0px)" },
+                            "50%": { transform: "translateY(-18px)" },
+                        },
+                        pulseGlow: {
+                            "0%,100%": { boxShadow: "0 0 30px rgba(59,43,238,0.4), 0 0 60px rgba(59,43,238,0.2)" },
+                            "50%": { boxShadow: "0 0 60px rgba(59,43,238,0.8), 0 0 120px rgba(59,43,238,0.4)" },
+                        },
+                        fadeUp: {
+                            from: { opacity: "0", transform: "translateY(30px)" },
+                            to: { opacity: "1", transform: "translateY(0)" },
+                        },
+                        loaderBar: {
+                            from: { width: "0%" },
+                            to: { width: "100%" },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f6f6f8;
+            color: #121022;
+        }
+
+        /* ── Loader ── */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #121022;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #loader.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .logo-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b2bee, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseGlow 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        .logo-ring::before {
+            content: "";
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #3b2bee, #7c3aed, transparent, transparent);
+            animation: spin 1.2s linear infinite;
+            z-index: -1;
+        }
+
+        .loader-track {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .loader-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b2bee, #7c3aed);
+            border-radius: 99px;
+            animation: loaderBar 1.8s ease-in-out forwards;
+        }
+
+        /* ── Glass ── */
+        .glass {
+            background: rgba(246, 246, 248, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(59, 43, 238, 0.08);
+        }
+
+        /* ── Fade-up observer ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Skill badge hover ── */
+        .skill-badge {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .skill-badge:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 12px 30px rgba(59, 43, 238, 0.18);
+        }
+
+        /* ── Project card ── */
+        .proj-card {
+            transition: transform 0.35s cubic-bezier(.22, 1, .36, 1), box-shadow 0.35s ease;
+        }
+
+        .proj-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(59, 43, 238, 0.14);
+        }
+
+        /* ── Gradient text ── */
+        .grad-text {
+            background: linear-gradient(135deg, #3b2bee 0%, #7c3aed 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Hero orb ── */
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+        }
+
+        /* ── Phone mockup ── */
+        .phone-shell {
+            width: 220px;
+            background: #1a1a2e;
+            border-radius: 36px;
+            padding: 10px;
+            box-shadow: 0 40px 80px rgba(59, 43, 238, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .phone-screen {
+            border-radius: 28px;
+            overflow: hidden;
+            background: linear-gradient(160deg, #3b2bee 0%, #7c3aed 60%, #121022 100%);
+            height: 400px;
+            position: relative;
+        }
+
+        /* ── Nav link ── */
+        .nav-link {
+            position: relative;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+            transition: color 0.2s;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3b2bee;
+            border-radius: 99px;
+            transition: width 0.25s ease;
+        }
+
+        .nav-link:hover {
+            color: #3b2bee;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* ── CTA buttons ── */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b2bee, #7c3aed);
+            color: #fff;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(59, 43, 238, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(59, 43, 238, 0.45);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #3b2bee;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 14px;
+            border: 2px solid rgba(59, 43, 238, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            border-color: #3b2bee;
+            box-shadow: 0 8px 24px rgba(59, 43, 238, 0.12);
+        }
+
+        /* ── Timeline ── */
+        .tl-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3b2bee;
+            box-shadow: 0 0 0 4px rgba(59, 43, 238, 0.2);
+        }
+
+        .tl-dot-faded {
+            background: #94a3b8;
+            box-shadow: none;
+        }
+
+        /* ── Section tag ── */
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 99px;
+            background: rgba(59, 43, 238, 0.08);
+            color: #3b2bee;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+    <!-- ════════════════════════════════════════
+       LOADER
+  ════════════════════════════════════════ -->
+    <div id="loader">
+
+        <!-- Floating decorative dots -->
+        <div class="loader-dots">
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+        </div>
+
+        <!-- Logo + orbit -->
+        <div class="loader-logo-wrap">
+            <div class="loader-orbit">
+                <div class="loader-logo">
+                    <span class="material-symbols-outlined">developer_mode</span>
+                </div>
+            </div>
+
+            <div class="loader-text">
+                <p class="loader-name">KamiyabAli Revasiya</p>
+                <p class="loader-tagline">iOS &amp; Flutter Developer</p>
+            </div>
+
+            <div class="loader-progress-wrap">
+                <div class="loader-track">
+                    <div class="loader-fill"></div>
+                </div>
+                <p class="loader-status">Launching Experience…</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════
+       NAVBAR
+  ════════════════════════════════════════ -->
+    <header id="navbar"
+        class="glass fixed top-0 left-0 right-0 z-50 px-6 md:px-16 lg:px-28 py-4 transition-all duration-300">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+
+            <!-- Logo -->
+            <a href="#hero" class="flex items-center gap-3 group">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white"
+                    style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                    <span class="material-symbols-outlined text-lg">developer_mode</span>
+                </div>
+                <span class="font-black text-lg tracking-tight text-slate-900">KamiyabAli</span>
+            </a>
+
+            <!-- Desktop nav -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="nav-link" href="#about">About</a>
+                <a class="nav-link" href="#skills">Skills</a>
+                <a class="nav-link" href="#projects">Projects</a>
+                <a class="nav-link" href="#experience">Experience</a>
+                <a class="nav-link" href="#contact">Contact</a>
+            </nav>
+
+            <!-- CTA + burger -->
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden md:inline-flex btn-primary text-sm py-2.5 px-5 rounded-xl">Hire Me</a>
+                <button id="menuBtn"
+                    class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100">
+                    <span id="menuIcon" class="material-symbols-outlined text-slate-700 text-xl">menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+            <div class="flex flex-col gap-4 pt-5 pb-2 px-2">
+                <a class="nav-link" href="#about">About</a>
+                <a class="nav-link" href="#skills">Skills</a>
+                <a class="nav-link" href="#projects">Projects</a>
+                <a class="nav-link" href="#experience">Experience</a>
+                <a class="nav-link" href="#contact">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ════════════════════════════════════════
+         HERO
+    ════════════════════════════════════════ -->
+        <section id="hero"
+            class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16 px-6 md:px-16 lg:px-28">
+
+            <!-- Background orbs -->
+            <div class="hero-orb w-[600px] h-[600px] top-[-150px] left-[-200px]"
+                style="background:rgba(59,43,238,0.10)"></div>
+            <div class="hero-orb w-[400px] h-[400px] bottom-[-100px] right-[-100px]"
+                style="background:rgba(124,58,237,0.12)"></div>
+            <div class="hero-orb w-[300px] h-[300px] top-[40%] left-[40%]" style="background:rgba(168,85,247,0.08)">
+            </div>
+
+            <!-- Subtle grid texture -->
+            <div class="absolute inset-0 pointer-events-none"
+                style="background-image:radial-gradient(rgba(59,43,238,0.06) 1px,transparent 1px);background-size:32px 32px;">
+            </div>
+
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+
+                <!-- Left text -->
+                <div class="space-y-8">
+                    <div class="section-tag">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Available for work
+                    </div>
+                    <h1
+                        class="text-5xl md:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight text-slate-900">
+                        Crafting <span class="grad-text">Mobile</span><br />Excellence.
+                    </h1>
+                    <p class="text-lg text-slate-500 leading-relaxed max-w-lg">
+                        I'm <strong class="text-slate-800">KamiyabAli Revasiya</strong>, an
+                        <span class="text-primary font-semibold">iOS Developer</span> specialized in Swift,
+                        SwiftUI & Flutter — building high-performance, beautiful apps that users love.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#contact" class="btn-primary flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">mail</span> Let's Talk
+                        </a>
+                        <a href="#projects" class="btn-secondary flex items-center gap-2">
+                            View Projects <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </a>
+                    </div>
+                    <!-- Stats row -->
+                    <div class="flex gap-8 pt-2">
+                        <div>
+                            <p class="text-3xl font-black text-slate-900">2+</p>
+                            <p class="text-sm text-slate-500 font-medium">Years Experience</p>
+                        </div>
+                        <div class="w-px bg-slate-200"></div>
+                        <div>
+                            <p class="text-3xl font-black text-slate-900">10+</p>
+                            <p class="text-sm text-slate-500 font-medium">Apps Shipped</p>
+                        </div>
+                        <div class="w-px bg-slate-200"></div>
+                        <div>
+                            <p class="text-3xl font-black text-slate-900">20+</p>
+                            <p class="text-sm text-slate-500 font-medium">Happy Clients</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right — phone mockup -->
+                <div class="flex justify-center lg:justify-end relative">
+                    <div class="phone-shell">
+                        <div class="phone-screen">
+                            <!-- Fake iOS UI inside phone -->
+                            <div class="p-5 space-y-4">
+                                <!-- Status bar -->
+                                <div class="flex justify-between items-center">
+                                    <span class="text-white/60 text-xs font-medium">9:41</span>
+                                    <div class="flex gap-1.5 items-center">
+                                        <span
+                                            class="text-white/60 material-symbols-outlined text-sm">signal_cellular_alt</span>
+                                        <span class="text-white/60 material-symbols-outlined text-sm">wifi</span>
+                                        <span
+                                            class="text-white/60 material-symbols-outlined text-sm">battery_full</span>
+                                    </div>
+                                </div>
+                                <!-- Dynamic island -->
+                                <div
+                                    class="mx-auto w-24 h-6 rounded-full bg-black/70 flex items-center justify-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-white/10 border border-white/20"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                                </div>
+                                <!-- App card 1 -->
+                                <div class="bg-white/15 backdrop-blur rounded-2xl p-4 space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-white text-sm">payments</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-white text-xs font-bold">FinTrack Pro</p>
+                                            <p class="text-white/50 text-xs">Balance</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-white text-2xl font-black">$4,829.00</p>
+                                    <div class="h-1.5 rounded-full bg-white/20 overflow-hidden">
+                                        <div class="h-full rounded-full bg-green-400" style="width:72%"></div>
+                                    </div>
+                                </div>
+                                <!-- App card 2  -->
+                                <div
+                                    class="bg-white/10 backdrop-blur rounded-2xl p-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-white text-base">favorite</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-white text-xs font-bold">HealthNode</p>
+                                            <p class="text-white/50 text-xs">Steps today</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-green-300 text-sm font-black">8,420</p>
+                                </div>
+                                <!-- Dots row -->
+                                <div class="flex justify-center gap-2 pt-2">
+                                    <div class="w-2 h-2 rounded-full bg-white"></div>
+                                    <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                                    <div class="w-2 h-2 rounded-full bg-white/30"></div>
+                                </div>
+                                <!-- Tab bar -->
+                                <div
+                                    class="absolute bottom-6 left-5 right-5 bg-white/15 backdrop-blur rounded-2xl p-3 flex justify-around">
+                                    <span class="material-symbols-outlined text-white text-xl">home</span>
+                                    <span class="material-symbols-outlined text-white/40 text-xl">search</span>
+                                    <span class="material-symbols-outlined text-white/40 text-xl">notifications</span>
+                                    <span class="material-symbols-outlined text-white/40 text-xl">person</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Glow behind phone -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 blur-3xl rounded-full pointer-events-none"
+                        style="background:rgba(59,43,238,0.25);"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         ABOUT
+    ════════════════════════════════════════ -->
+        <section id="about" class="py-24 px-6 md:px-16 lg:px-28"
+            style="background:linear-gradient(180deg,#fff 0%,#f6f6f8 100%)">
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="mb-6"><span class="section-tag">About Me</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-6">
+                    Passionate about pixels <span class="grad-text">& performance.</span>
+                </h2>
+                <p class="text-lg text-slate-500 leading-relaxed max-w-3xl">
+                    I'm a Mobile App Developer specializing in <strong class="text-slate-700">iOS and Flutter</strong>
+                    development.
+                    I focus on building high-performance, scalable, and user-friendly mobile applications with a deep
+                    care
+                    for clean architecture and delightful user experience.
+                    My experience spans native iOS apps with <strong class="text-slate-700">Swift & SwiftUI</strong>,
+                    cross-platform apps
+                    with <strong class="text-slate-700">Flutter</strong>, REST API integration, Firebase, and
+                    pixel-perfect UI implementation.
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mt-12">
+                    <div
+                        class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center group hover:border-primary/30 transition-all">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+                            style="background:rgba(59,43,238,0.08)">
+                            <span class="material-symbols-outlined text-primary">smartphone</span>
+                        </div>
+                        <p class="font-black text-slate-900">iOS Native</p>
+                        <p class="text-xs text-slate-400 mt-1">Swift & SwiftUI</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center group hover:border-primary/30 transition-all">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+                            style="background:rgba(59,43,238,0.08)">
+                            <span class="material-symbols-outlined text-primary">flutter_dash</span>
+                        </div>
+                        <p class="font-black text-slate-900">Flutter</p>
+                        <p class="text-xs text-slate-400 mt-1">Cross-Platform</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center group hover:border-primary/30 transition-all">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+                            style="background:rgba(59,43,238,0.08)">
+                            <span class="material-symbols-outlined text-primary">local_fire_department</span>
+                        </div>
+                        <p class="font-black text-slate-900">Firebase</p>
+                        <p class="text-xs text-slate-400 mt-1">Cloud & Auth</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center group hover:border-primary/30 transition-all">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+                            style="background:rgba(59,43,238,0.08)">
+                            <span class="material-symbols-outlined text-primary">api</span>
+                        </div>
+                        <p class="font-black text-slate-900">REST APIs</p>
+                        <p class="text-xs text-slate-400 mt-1">Integration</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         SKILLS
+    ════════════════════════════════════════ -->
+        <section id="skills" class="py-24 px-6 md:px-16 lg:px-28 bg-bg-light">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-4 reveal"><span class="section-tag">Expertise</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-4 reveal">
+                    Skills & <span class="grad-text">Technologies</span>
+                </h2>
+                <p class="text-slate-500 mb-14 reveal">The tools I use to bring ideas to life.</p>
+
+                <!-- iOS / Apple -->
+                <div class="mb-10 reveal">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">iOS & Apple</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">terminal</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Swift</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">layers</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">SwiftUI</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">smartphone</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">UIKit</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">ios</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Xcode</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">manage_history</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Core Data</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">bar_chart</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Charts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cross-platform & Backend -->
+                <div class="mb-10 reveal">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">Cross-Platform & Backend
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">flutter_dash</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Flutter</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">code</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Dart</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span
+                                    class="material-symbols-outlined text-primary text-2xl">local_fire_department</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Firebase</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">api</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">REST APIs</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">hub</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Git & GitHub</span>
+                        </div>
+
+                        <div
+                            class="skill-badge bg-white rounded-2xl p-5 flex flex-col items-center gap-3 border border-slate-100 shadow-sm cursor-default">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
+                                style="background:rgba(59,43,238,0.08)">
+                                <span class="material-symbols-outlined text-primary text-2xl">draw</span>
+                            </div>
+                            <span class="font-bold text-sm text-slate-800">Figma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         SERVICES / WHAT I DO
+    ════════════════════════════════════════ -->
+        <section class="py-24 px-6 md:px-16 lg:px-28 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-4 reveal"><span class="section-tag">Services</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-14 reveal">
+                    What I <span class="grad-text">Do</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                    <div
+                        class="reveal p-8 rounded-3xl border border-slate-100 bg-bg-light hover:border-primary/30 hover:shadow-lg transition-all group">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                            style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                            <span class="material-symbols-outlined text-white text-2xl">ios</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">iOS Development</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Native development with Swift and SwiftUI —
+                            maximum performance and deep OS integration.</p>
+                    </div>
+
+                    <div
+                        class="reveal p-8 rounded-3xl border border-slate-100 bg-bg-light hover:border-primary/30 hover:shadow-lg transition-all group">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                            style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                            <span class="material-symbols-outlined text-white text-2xl">flutter_dash</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">Flutter Apps</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Cross-platform apps that feel native on both
+                            iOS and Android from a single codebase.</p>
+                    </div>
+
+                    <div
+                        class="reveal p-8 rounded-3xl border border-slate-100 bg-bg-light hover:border-primary/30 hover:shadow-lg transition-all group">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                            style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                            <span class="material-symbols-outlined text-white text-2xl">draw</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">UI Implementation</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Turning Figma designs into pixel-perfect,
+                            interactive mobile interfaces with smooth animations.</p>
+                    </div>
+
+                    <div
+                        class="reveal p-8 rounded-3xl border border-slate-100 bg-bg-light hover:border-primary/30 hover:shadow-lg transition-all group">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                            style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                            <span class="material-symbols-outlined text-white text-2xl">api</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">API Integration</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Seamless REST API integration for efficient
+                            data exchange, authentication, and dynamic functionality.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         PROJECTS
+    ════════════════════════════════════════ -->
+        <section id="projects" class="py-24 px-6 md:px-16 lg:px-28 bg-bg-light">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-4 reveal"><span class="section-tag">Projects</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-4 reveal">
+                    Featured <span class="grad-text">Work</span>
+                </h2>
+                <p class="text-slate-500 mb-14 reveal">A collection of mobile experiences built from scratch.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Project 1 -->
+                    <div
+                        class="proj-card reveal bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                        <div class="h-48 flex items-center justify-center relative overflow-hidden"
+                            style="background:linear-gradient(135deg,#3b2bee 0%,#7c3aed 100%)">
+                            <span class="material-symbols-outlined text-white/20 absolute text-[120px]">payments</span>
+                            <div class="relative z-10 text-center">
+                                <div
+                                    class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-2">
+                                    <span class="material-symbols-outlined text-white text-3xl">payments</span>
+                                </div>
+                                <p class="text-white font-bold text-sm">FinTrack Pro</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                    style="background:rgba(59,43,238,0.08)">SwiftUI</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                    style="background:rgba(59,43,238,0.08)">Firebase</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                    style="background:rgba(59,43,238,0.08)">Charts</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-900">FinTrack Pro</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">Personal finance dashboard with real-time
+                                expense tracking and budget visualization using the Charts framework.</p>
+                            <a href="#"
+                                class="inline-flex items-center gap-1.5 text-primary font-bold text-sm mt-2 hover:gap-2.5 transition-all">
+                                View Project <span class="material-symbols-outlined text-base">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div
+                        class="proj-card reveal bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                        <div class="h-48 flex items-center justify-center relative overflow-hidden"
+                            style="background:linear-gradient(135deg,#059669 0%,#0d9488 100%)">
+                            <span class="material-symbols-outlined text-white/20 absolute text-[120px]">favorite</span>
+                            <div class="relative z-10 text-center">
+                                <div
+                                    class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-2">
+                                    <span class="material-symbols-outlined text-white text-3xl">favorite</span>
+                                </div>
+                                <p class="text-white font-bold text-sm">HealthNode</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-emerald-700"
+                                    style="background:rgba(5,150,105,0.1)">Flutter</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-emerald-700"
+                                    style="background:rgba(5,150,105,0.1)">Dart</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-emerald-700"
+                                    style="background:rgba(5,150,105,0.1)">HealthKit</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-900">HealthNode</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">Cross-platform health monitoring app
+                                integrated with Apple HealthKit and Google Fit APIs.</p>
+                            <a href="#"
+                                class="inline-flex items-center gap-1.5 text-emerald-600 font-bold text-sm mt-2 hover:gap-2.5 transition-all">
+                                View Project <span class="material-symbols-outlined text-base">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div
+                        class="proj-card reveal bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+                        <div class="h-48 flex items-center justify-center relative overflow-hidden"
+                            style="background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%)">
+                            <span
+                                class="material-symbols-outlined text-white/20 absolute text-[120px]">storefront</span>
+                            <div class="relative z-10 text-center">
+                                <div
+                                    class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-2">
+                                    <span class="material-symbols-outlined text-white text-3xl">storefront</span>
+                                </div>
+                                <p class="text-white font-bold text-sm">ShopSwift</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-orange-700"
+                                    style="background:rgba(245,158,11,0.12)">Swift</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-orange-700"
+                                    style="background:rgba(245,158,11,0.12)">UIKit</span>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full text-orange-700"
+                                    style="background:rgba(245,158,11,0.12)">Stripe</span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-900">ShopSwift</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">E-commerce iOS app with Stripe payment
+                                integration, smooth product browsing, and order tracking.</p>
+                            <a href="#"
+                                class="inline-flex items-center gap-1.5 text-orange-500 font-bold text-sm mt-2 hover:gap-2.5 transition-all">
+                                View Project <span class="material-symbols-outlined text-base">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         EXPERIENCE
+    ════════════════════════════════════════ -->
+        <section id="experience" class="py-24 px-6 md:px-16 lg:px-28 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-4 reveal"><span class="section-tag">Experience</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-14 reveal">
+                    Work <span class="grad-text">Timeline</span>
+                </h2>
+
+                <div class="relative pl-8 space-y-12">
+                    <!-- Line -->
+                    <div
+                        class="absolute left-0 top-2 bottom-0 w-0.5 bg-gradient-to-b from-primary via-violet-400 to-slate-200">
+                    </div>
+
+                    <!-- Current -->
+                    <div class="reveal relative">
+                        <div class="tl-dot absolute -left-[38px] top-1"></div>
+                        <span class="text-xs font-bold text-primary uppercase tracking-widest">Jul 2024 – Present</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1 mb-3">iOS Developer</h3>
+                        <p class="text-slate-500 leading-relaxed">
+                            Developing modern iOS applications using Swift and SwiftUI.
+                            Working on REST API integration, Firebase services, and building responsive user interfaces.
+                            Focused on delivering high-performance mobile apps with clean architecture and smooth user
+                            experience.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                style="background:rgba(59,43,238,0.08)">Swift</span>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                style="background:rgba(59,43,238,0.08)">SwiftUI</span>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                style="background:rgba(59,43,238,0.08)">Firebase</span>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full text-primary"
+                                style="background:rgba(59,43,238,0.08)">REST APIs</span>
+                        </div>
+                    </div>
+
+                    <!-- Trainee -->
+                    <div class="reveal relative">
+                        <div class="tl-dot tl-dot-faded absolute -left-[38px] top-1"></div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Dec 2023 – Jul
+                            2024</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-1 mb-3">iOS Developer Trainee</h3>
+                        <p class="text-slate-500 leading-relaxed">
+                            Completed professional training in iOS development.
+                            Built mobile applications using Swift and UIKit, implemented REST APIs, worked with
+                            Firebase,
+                            and gained experience in debugging, UI development, and app optimization.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span
+                                class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-500">Swift</span>
+                            <span
+                                class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-500">UIKit</span>
+                            <span
+                                class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-500">Xcode</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+         CONTACT
+    ════════════════════════════════════════ -->
+        <section id="contact" class="py-24 px-6 md:px-16 lg:px-28 bg-bg-light">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-4 reveal"><span class="section-tag">Contact</span></div>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-14 reveal">
+                    Let's build something <span class="grad-text">amazing.</span>
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+                    <!-- Info side -->
+                    <div class="reveal space-y-8">
+                        <p class="text-lg text-slate-500 leading-relaxed">
+                            I'm currently working as an iOS Developer and always open to new projects, opportunities,
+                            and interesting collaborations. Let's talk!
+                        </p>
+
+                        <div class="space-y-5">
+                            <a href="mailto:kamiyabalir@gmail.com"
+                                class="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                                    style="background:rgba(59,43,238,0.08)">
+                                    <span class="material-symbols-outlined text-primary">mail</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Email</p>
+                                    <p class="font-bold text-slate-900 group-hover:text-primary transition-colors">
+                                        kamiyabalir@gmail.com</p>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-slate-300 ml-auto group-hover:text-primary transition-colors">arrow_forward</span>
+                            </a>
+
+                            <div
+                                class="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                                    style="background:rgba(59,43,238,0.08)">
+                                    <span class="material-symbols-outlined text-primary">location_on</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Location</p>
+                                    <p class="font-bold text-slate-900">Ahmedabad, India</p>
+                                </div>
+                            </div>
+
+                            <a href="https://in.linkedin.com/in/kamiyabali-revasiya-b71a3428b" target="_blank"
+                                class="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                                    style="background:rgba(59,43,238,0.08)">
+                                    <span class="material-symbols-outlined text-primary">work</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">LinkedIn</p>
+                                    <p class="font-bold text-slate-900 group-hover:text-primary transition-colors">
+                                        KamiyabAli Revasiya</p>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-slate-300 ml-auto group-hover:text-primary transition-colors">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Form side -->
+                    <div class="reveal bg-white rounded-3xl border border-slate-100 shadow-sm p-8 lg:p-10">
+                        <form action="https://formsubmit.co/kamiyabali.emedstore@gmail.com" method="POST"
+                            class="space-y-5">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-widest">Name</label>
+                                    <input type="text" required placeholder="John Doe"
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-widest">Email</label>
+                                    <input type="email" required placeholder="john@example.com"
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-xs font-bold text-slate-500 uppercase tracking-widest">Subject</label>
+                                <input type="text" required placeholder="Project Inquiry"
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-xs font-bold text-slate-500 uppercase tracking-widest">Message</label>
+                                <textarea required placeholder="Tell me about your project..." rows="4"
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-bg-light focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all text-slate-800 placeholder-slate-400 resize-none"></textarea>
+                            </div>
+                            <button type="submit"
+                                class="btn-primary w-full flex items-center justify-center gap-2 py-4">
+                                <span class="material-symbols-outlined">send</span> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════ -->
+    <footer class="py-12 px-6 md:px-16 lg:px-28 border-t border-slate-100 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white"
+                    style="background:linear-gradient(135deg,#3b2bee,#7c3aed)">
+                    <span class="material-symbols-outlined text-base">developer_mode</span>
+                </div>
+                <span class="font-black text-slate-800">NexDev</span>
+            </div>
+            <p class="text-sm text-slate-400">© 2026 NexDev . All rights reserved.</p>
+            <div class="flex items-center gap-5">
+                <a href="https://in.linkedin.com/in/kamiyabali-revasiya-b71a3428b" target="_blank"
+                    class="text-sm text-slate-400 hover:text-primary font-medium transition-colors">LinkedIn</a>
+                <a href="mailto:kamiyabalir@gmail.com"
+                    class="text-sm text-slate-400 hover:text-primary font-medium transition-colors">Email</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════ -->
+    <script>
+        // ── Loader ─────────────────────────────
+        // Show loader for at least 3s; hide after page is ready
+        const loaderEl = document.getElementById("loader");
+        const LOADER_MIN_MS = 3000;
+        const startTime = Date.now();
+
+        function hideLoader() {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, LOADER_MIN_MS - elapsed);
+            setTimeout(() => {
+                loaderEl.classList.add("loader--out");
+                // Remove from DOM after transition ends so it never blocks interaction
+                setTimeout(() => loaderEl.remove(), 900);
+            }, remaining);
+        }
+
+        if (document.readyState === "complete") {
+            hideLoader();
+        } else {
+            window.addEventListener("load", hideLoader, { once: true });
+            // Safety fallback: hide after 4s regardless
+            setTimeout(hideLoader, 4000);
+        }
+
+        // ── Mobile menu ─────────────────────────
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const menuIcon = document.getElementById("menuIcon");
+        let isOpen = false;
+        menuBtn.addEventListener("click", () => {
+            isOpen = !isOpen;
+            mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + "px" : "0px";
+            menuIcon.textContent = isOpen ? "close" : "menu";
+        });
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll("a").forEach(a => {
+            a.addEventListener("click", () => {
+                isOpen = false;
+                mobileMenu.style.maxHeight = "0px";
+                menuIcon.textContent = "menu";
+            });
+        });
+
+        // ── Scroll-reveal (IntersectionObserver) ──
+        const reveals = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add("visible"), i * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        reveals.forEach(el => observer.observe(el));
+
+        // ── Active nav highlight on scroll ────────
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(s => {
+                if (window.scrollY >= s.offsetTop - 120) current = s.id;
+            });
+            navLinks.forEach(l => {
+                l.style.color = l.getAttribute("href") === "#" + current ? "#3b2bee" : "";
+            });
+        }, { passive: true });
+    </script>
+
+</body>
+
+</html>
